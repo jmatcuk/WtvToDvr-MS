@@ -1,7 +1,13 @@
-﻿# Define the location of Windows WTVConverter.exe
+﻿
+######################################################
+## Configuration Variables                          ##
+######################################################
+
+# Define the location of Windows WTVConverter.exe
 $wTvConverter = "C:\Windows\ehome\WTVConverter.exe"
 # Define the location of recorded (*.wtv) shows.
 $recordedTv = "T:\Recorded TV"
+# The buffer time in minutes that you want any actions on files to be delayed in order to ensure that they are currently being recorded or written to.
 $writeBufferMinutes = 5
 
 # Retrieve all of the recorded (*.wtv) shows and loop through them.
