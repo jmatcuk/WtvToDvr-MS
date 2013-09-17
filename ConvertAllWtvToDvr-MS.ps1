@@ -7,7 +7,7 @@ $wTvConverter = "C:\Windows\ehome\WTVConverter.exe"
 
 # The buffer time in minutes that you want any actions on files to be delayed
 #  in order to ensure that they are currently being recorded or written to.
-$writeBufferMinutes = 5
+$writeBufferMinutes = 3
 
 # File type extensions configuration.
 $recordingsFileExtensionPattern = '*.wtv'
