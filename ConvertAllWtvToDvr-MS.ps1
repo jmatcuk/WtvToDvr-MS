@@ -15,6 +15,7 @@ $convertedShowFileExtension = ' - DVRMS.dvr-ms'
 
 # Define the location of recorded ($recordingsFileExtensionPattern) shows.
 $recordedTv = "T:\Recorded TV"
+$deletedShows = "T:\DeletedShows"
 
 # Is the script done with what it needs to do?
 $workComplete = $false
@@ -80,11 +81,9 @@ $showsToConvert | ForEach-Object {
 }
 $copyProtectedShows | ForEach-Object {$showsToConvert.Remove($_)} # Remove copy-protected shows.
 
-("Show count: " + $showsToConvert.Count) # Debug
+# Exit if all shows are copy protected.
+if ($showsToConvert.Count -eq 0) {echo ("All shows found were copy protected."); exit 0}
 
-# For ability to delete to recycle bin.
-# http://stackoverflow.com/questions/502002/how-do-i-move-a-file-to-the-recycle-bin-using-powershell
-$shell = new-object -comobject "Shell.Application"
 while (!$workComplete) {
     # Check every minute if each conversion has completed by at least #writeBufferMinutes.
     Start-Sleep 60 #seconds
@@ -99,16 +98,15 @@ while (!$workComplete) {
 
         # Since the existing variable doesn't contain the latest time, we need to re-query for it.
         $outputFile = Get-ChildItem $outputFileName
-        echo ("OutputFile: " + $outputFile.Name)
-        echo ("Last Write Time: " + $outputFile.LastWriteTime)
-        echo ("Now minus " + $writeBufferMinutes + " minutes: " + (get-date).AddMinutes(-$writeBufferMinutes))
+        #echo ("OutputFile: " + $outputFile.Name)
+        #echo ("Last Write Time: " + $outputFile.LastWriteTime)
+        #echo ("Now minus " + $writeBufferMinutes + " minutes: " + (get-date).AddMinutes(-$writeBufferMinutes))
         if ($outputFile.LastWriteTime -le (get-date).AddMinutes(-$writeBufferMinutes)) {
             # Remove the original .wtv file once it hasn't been written to in the last $writeBufferMinutes.
             #Remove-Item $_.FullName
-            
+            Move-Item $recording.FullName $deletedShows #Move it temporarily until I know everything works.
+
             echo ("Remove Item: " + $recording.FullName)
-            $item = $shell.Namespace(0).ParseName("$_.FullName")
-            $item.InvokeVerb("delete")
 
             # Add show to remove to queue.
             $null = $finishedShows.Add($recording)
